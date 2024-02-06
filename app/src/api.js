@@ -7,9 +7,9 @@ import {
     doc,
     query,
     where,
-    addDoc 
+    addDoc,
+    deleteDoc
 } from "firebase/firestore/lite";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -25,19 +25,46 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const vansCollection = collection(db, "vans");
-export const auth = getAuth(app)
+const usersCollection = collection(db, "users");
+
+// check email address in database to void duplication
+export async function checkEmail(email) {
+    const q = query(usersCollection, where('email', '==', email));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.length === 0; // Returns true if email not found, false if found
+}
 
 // registration new user
-export const registerUser = async (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password)
+export async function createUser(user) {
+    try {
+        await addDoc(usersCollection, user)
+    } catch (error) {
+        console.log("Error creating new user: " + error)
+    }
 }
-// authentication for Firestorm database:
-export const loginUser = async ({ email, password }) => {
-    return signInWithEmailAndPassword(auth, email, password);
-};
 
+// push the user object in localStorage
+function pushUserToLocalStorage(user) {
+    localStorage.setItem('user', JSON.stringify(user))
+}
 
-// refactoring fetching functions
+//login user
+export async function loginUser(data) {
+    const snapshot = await getDocs(usersCollection)
+    const users = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+    }))
+    const { email, password } = data
+    const user = users.find(user => user.email == email && user.password == password)
+
+    if (user) {
+        pushUserToLocalStorage(user)
+    }
+
+    return user
+}
+
 export async function getVans() {
     try {
         const snapshot = await getDocs(vansCollection);
@@ -92,52 +119,21 @@ export async function createVan(van) {
     }
 }
 
-/* export async function getVans(id) {
-    const url = id ? `/api/vans/${id}` : "/api/vans";
-    const res = await fetch(url);
-    if (!res.ok) {
-        throw {
-            message: "Failed to fetch vans",
-            statusText: res.statusText,
-            status: res.status,
-        };
+
+// Update a van
+
+// Delete a van
+export async function deleteVan(vanID) {
+    try {
+        // obtain a ref to the specific van by its ID
+        const vanRef = doc(db, "vans", vanID)
+
+        // delete the doc
+        await deleteDoc(vanRef)
+
+        console.log(`Doc with ID ${vanID} deleted!`)
+    } catch (error) {
+        console.log("Error deleting doc: " + error)
     }
-    const data = await res.json();
-    return data.vans;
-} */
-
-
-
-
-/* export async function getHostVans(id) {
-    const url = id ? `/api/host/vans/${id}` : "/api/host/vans";
-    const res = await fetch(url);
-    if (!res.ok) {
-        throw {
-            message: "Failed to fetch vans",
-            statusText: res.statusText,
-            status: res.status,
-        };
-    }
-    const data = await res.json();
-    return data.vans;
-} */
-
-/* export async function loginUser(creds) {
-    const res = await fetch("/api/login", {
-        method: "post",
-        body: JSON.stringify(creds),
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-        throw {
-            message: data.message,
-            statusText: res.statusText,
-            status: res.status,
-        };
-    }
-
-    return data;
-} */
+}
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { getVans, createVan } from "../../api";
+import { getVans, createVan, deleteVan } from "../../api";
+import { BiSolidMessageSquareEdit } from "react-icons/bi";
+import { MdDelete } from "react-icons/md";
 
 export default function Dashboard() {
     const [vans, setVans] = useState([]);
@@ -23,6 +25,8 @@ export default function Dashboard() {
         }
         loadVans();
     }, []);
+
+
 
     // Create Van:
     async function handleCreateVan(e) {
@@ -59,12 +63,24 @@ export default function Dashboard() {
         }
         //Close modal
         closeModal()
-        /* document.getElementById("my_modal_3").close(); */
     }
 
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    // Delete Van
+    async function handleDeleteVan(id, name) {
+        if (window.confirm(`Are you sure you want to delete ${name}`)) {
+            const success = await deleteVan(id)
+            if(success) {
+                alert(`${name} deleted successfully!`)
+                setVans(vans.filter(van => van.id !== id))
+            } else {
+                alert(`Failed to delete ${name}.`)
+            }
+        }
+    }
 
         // Modal form:
         function Modal() {
@@ -155,6 +171,7 @@ export default function Dashboard() {
 
     return (
         <div className="container my-2 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
+            
             <div className="container">
                 <button
                     type="button"
@@ -178,15 +195,20 @@ export default function Dashboard() {
                             <th>Type</th>
                             <th>Price</th>
                             <th>Description</th>
+                            <th>Options</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {console.log(vans)}
                         {vans.map((van) => (
                             <tr key={van.id}>
                                 <th>{van.name}</th>
                                 <td>{van.type}</td>
                                 <td>{van.price}</td>
                                 <td>{van.description}</td>
+                                <td><button><BiSolidMessageSquareEdit /></button></td>
+                                <td><button
+                                    onClick={() => handleDeleteVan(van.id, van.name)}><MdDelete /></button></td>
                             </tr>
                         ))}
                     </tbody>

@@ -44,5 +44,6 @@ STEP 7:
 
     Protected routes.
     - Creation of the Login form.
-    - Implementation of Authentication logic in a separate file for which a conditional statement checks if the user is authenticated to render the <Outlet /> of the children components. The logic is very basic since the App is not linked to any database, yet.
+    - Implementation of Authentication logic in a separate file for which a conditional statement checks if the user is authenticated to render the <Outlet /> of the children components. 
 
+    On this note; I tried implementing Firebase authentication module ('firebase/auth') for handling registration and login. Although the process seems straight forward, it did not work as expectes for reason I wasn't able to debug. In short, when login/signup, any request sent from the client to the database returned a network error. Unfortunately I had to transition to a Custom based authentication approach, more complexed and potentially error prone, but hopefully more controllable.

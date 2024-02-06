@@ -1,26 +1,11 @@
-import { useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-function useAuth () {
-    const [currentUser, setCurrentUser] = useState(null)
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, user => {
-            setCurrentUser(user ? user : null);
-        });
-        return unsubscribe;
-    }, []);
-
-    return currentUser
-}
-
 export default function AuthRequired() {
-    const currentUser = useAuth()
+    const currentUser = localStorage.getItem("user")
     const location = useLocation()
 
     if (!currentUser) {
-        return <Navigate to="/login" state={{ from: location }} replace />
+        return <Navigate to="/login" state={{ message: "You must log in first", from: location }} replace />
     } else {
         return <Outlet />
     }

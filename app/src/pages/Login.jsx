@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loginUser, registerUser } from "../api.js";
+import { loginUser } from "../api.js";
 
 export default function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" });
