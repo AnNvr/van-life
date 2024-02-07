@@ -8,7 +8,8 @@ import {
     query,
     where,
     addDoc,
-    deleteDoc
+    deleteDoc,
+    updateDoc
 } from "firebase/firestore/lite";
 
 
@@ -103,6 +104,30 @@ export async function getHostVans() {
     }
 }
 
+// Get a van by ID
+export async function getVanByID(vanID) {
+    try {
+        // create a ref for the doc by its ID
+        const vanRef = doc(db, "vans", vanID)
+
+        // fetch the doc
+        const docSnap = await getDoc(vanRef)
+
+        // check if the doc exists
+        if (docSnap.exists()) {
+            console.log("Document data: ", docSnap.data())
+            return docSnap.data()
+        } else {
+            console.log("No doc found")
+            return null
+        }
+    } catch(error) {
+        console.error("Error fetching van by ID: " + error)
+        throw error
+    }
+}
+
+// Create a van
 export async function createVan(van) {
     try {
         // Reference to vans collection
@@ -121,6 +146,22 @@ export async function createVan(van) {
 
 
 // Update a van
+export async function updateVan(vanID, updateData) {
+    try {
+        // Reference to a specific van doc
+        const docRef = doc(db, "vans", vanID)
+
+        // update the doc
+        await updateDoc(docRef, updateData)
+
+        console.log(`Doc with ID ${vanID} updated!`)
+        return true
+
+    } catch (error) {
+        console.log("Error updating document: " + error)
+        return false
+    }
+}
 
 // Delete a van
 export async function deleteVan(vanID) {

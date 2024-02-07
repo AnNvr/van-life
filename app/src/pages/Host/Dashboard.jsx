@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { getVans, createVan, deleteVan } from "../../api";
+import { createVan, getVans, updateVan, deleteVan } from "../../api";
 import { BiSolidMessageSquareEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 
 export default function Dashboard() {
     const [vans, setVans] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     // state for handling error messages
     const [error, setError] = useState(null);
     // state for loading
@@ -26,7 +27,7 @@ export default function Dashboard() {
         loadVans();
     }, []);
 
-
+    
 
     // Create Van:
     async function handleCreateVan(e) {
@@ -50,128 +51,149 @@ export default function Dashboard() {
             type: formData.get("type"),
             price: Number(formData.get("price")),
             description: formData.get("description"),
-            img: formData.get("imageUrl"),
+            imageUrl: formData.get("imageUrl"),
         };
 
         try {
             const newVanId = await createVan(newVan);
             setVans([...vans, { ...newVan, id: newVanId }]);
-            setIsModalOpen(false)
+            setIsModalOpen(false);
         } catch (error) {
             setError(error);
             console.log("Error creating new van:", error);
         }
         //Close modal
-        closeModal()
+        closeModal();
     }
 
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
+    // Update
+    async function handleUpdateVan(id, van) {
+        const updateData = {
+            name: van.name,
+            price: van.price,
+            type: van.type,
+            description: van.description,
+            imageUrl: van.urlImage,
+        };
+
+        try {
+            await updateVan(id, updateData);
+            alert("Van updated successfully!");
+            setVans(prevState => prevState.map(van => van.id === id ? {...van, ...updateData} : van))
+        } catch (error) {
+            console.error("Failed to update van: " + error);
+            alert("Failed to update van");
+        }
+    }
+
     // Delete Van
     async function handleDeleteVan(id, name) {
         if (window.confirm(`Are you sure you want to delete ${name}`)) {
-            const success = await deleteVan(id)
-            if(success) {
-                alert(`${name} deleted successfully!`)
-                setVans(vans.filter(van => van.id !== id))
+            const success = await deleteVan(id);
+            if (success) {
+                alert(`${name} deleted successfully!`);
+                setVans(vans.filter((van) => van.id !== id));
             } else {
-                alert(`Failed to delete ${name}.`)
+                alert(`Failed to delete ${name}.`);
             }
         }
     }
 
-        // Modal form:
-        function Modal() {
-            return (
-                <div>
-                    <dialog className="modal" open={isModalOpen}>
-                        <div className="modal-box">
-                                <button
-                                type="button"
-                                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                                    onClick={closeModal}
-                                    >
-                                    ✕
-                                </button>
-                            <h3 className="font-bold text-lg my-2">Create van</h3>
-                            <form
+
+    // Modal form:
+    function Modal() {
+        return (
+            <div>
+                <dialog className="modal" open={isModalOpen}>
+                    <div className="modal-box">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                            onClick={closeModal}
+                        >
+                            ✕
+                        </button>
+                        <h3 className="font-bold text-lg my-2">Create van</h3>
+                        <form
                             className="flex flex-col gap-5"
-                                onSubmit={handleCreateVan}>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Name"
+                            onSubmit={handleCreateVan}
+                            
+                        >
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Name"
+                                className="input input-bordered w-full max-w-x"
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="price"
+                                placeholder="Price"
+                                className="input input-bordered w-full max-w-x"
+                                required
+                            />
+                            <label for="van-type">Van type:</label>
+                            <select
+                                name="type"
+                                className="input input-bordered w-full max-w-x"
+                                required
+                            >
+                                <option
+                                    value=""
                                     className="input input-bordered w-full max-w-x"
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    name="price"
-                                    placeholder="Price"
-                                    className="input input-bordered w-full max-w-x"
-                                    required
-                                />
-                                <label for="van-type">Van type:</label>
-                                <select
-                                    name="type"
-                                    className="input input-bordered w-full max-w-x"
-                                    required
                                 >
-                                    <option
-                                        value=""
-                                        className="input input-bordered w-full max-w-x"
-                                    >
-                                        {" "}
-                                        -- select an option --
-                                    </option>
-                                    <option
-                                        value="simple"
-                                        className="input input-bordered w-full max-w-x"
-                                    >
-                                        Simple
-                                    </option>
-                                    <option
-                                        value="luxury"
-                                        className="input input-bordered w-full max-w-x"
-                                    >
-                                        Luxury
-                                    </option>
-                                    <option
-                                        value="rugged"
-                                        className="input input-bordered w-full max-w-x"
-                                    >
-                                        Rugged
-                                    </option>
-                                </select>
-                                <textarea
-                                    name="description"
-                                    placeholder="Description"
-                                    className="input input-bordered w-full max-w-x resize-none"
-                                    required
-                                />
-                                <input
-                                    type="url"
-                                    name="imageUrl"
-                                    placeholder="URL image"
+                                    {" "}
+                                    -- select an option --
+                                </option>
+                                <option
+                                    value="simple"
                                     className="input input-bordered w-full max-w-x"
-                                    required
-                                />
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    >Create Van</button>
-                            </form>
-                        </div>
-                    </dialog>
-                </div>
-            );
-        }
+                                >
+                                    Simple
+                                </option>
+                                <option
+                                    value="luxury"
+                                    className="input input-bordered w-full max-w-x"
+                                >
+                                    Luxury
+                                </option>
+                                <option
+                                    value="rugged"
+                                    className="input input-bordered w-full max-w-x"
+                                >
+                                    Rugged
+                                </option>
+                            </select>
+                            <textarea
+                                name="description"
+                                placeholder="Description"
+                                className="input input-bordered w-full max-w-x resize-none"
+                                required
+                            />
+                            <input
+                                type="url"
+                                name="imageUrl"
+                                placeholder="URL image"
+                                className="input input-bordered w-full max-w-x"
+                                required
+                            />
+                            <button type="submit" className="btn btn-primary">
+                                Create Van
+                            </button>
+                        </form>
+                    </div>
+                </dialog>
+            </div>
+        );
+    }
 
     return (
         <div className="container my-2 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
-            
             <div className="container">
                 <button
                     type="button"
@@ -182,42 +204,58 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            {isModalOpen && <Modal />}
+            {isModalOpen && <Modal/>}
 
             <div className="bg-[#fafafa] border-2 border-[#FFDDB2] rounded-lg p-2">
-            <h2 className="text-center">Van List</h2>
-            <div className="overflow-x-auto">
-                <table className="table table-compact w-full">
-                    {/* head */}
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Price</th>
-                            <th>Description</th>
-                            <th>Options</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {console.log(vans)}
-                        {vans.map((van) => (
-                            <tr key={van.id}>
-                                <th>{van.name}</th>
-                                <td>{van.type}</td>
-                                <td>{van.price}</td>
-                                <td>{van.description}</td>
-                                <td><button><BiSolidMessageSquareEdit /></button></td>
-                                <td><button
-                                    onClick={() => handleDeleteVan(van.id, van.name)}><MdDelete /></button></td>
+                <h2 className="text-center">Van List</h2>
+                <div className="overflow-x-auto">
+                    <table className="table table-compact w-full">
+                        {/* head */}
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Price</th>
+                                <th>Description</th>
+                                <th>Options</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {vans.map((van) => (
+                                <tr key={van.id}>
+                                    <th>{van.name}</th>
+                                    <td>{van.type}</td>
+                                    <td>{van.price}</td>
+                                    <td>{van.description}</td>
+                                    <td>
+                                        <button
+                                            onClick={() =>
+                                                handleUpdateVan(
+                                                    van.id,
+                                                    {...van}
+                                                )}
+                                        >
+                                            <BiSolidMessageSquareEdit />
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteVan(
+                                                    van.id,
+                                                    van.name
+                                                )
+                                            }
+                                        >
+                                            <MdDelete />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     );
 }
-
-
-
