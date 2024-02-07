@@ -173,8 +173,10 @@ export async function deleteVan(vanID) {
         await deleteDoc(vanRef)
 
         console.log(`Doc with ID ${vanID} deleted!`)
+        return true // fundamental! Without it will return undefined!
     } catch (error) {
         console.log("Error deleting doc: " + error)
+        return false
     }
 }
 
