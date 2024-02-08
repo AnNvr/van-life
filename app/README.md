@@ -47,3 +47,15 @@ STEP 7:
     - Implementation of Authentication logic in a separate file for which a conditional statement checks if the user is authenticated to render the <Outlet /> of the children components. 
 
     On this note; I tried implementing Firebase authentication module ('firebase/auth') for handling registration and login. Although the process seems straight forward, it did not work as expectes for reason I wasn't able to debug. In short, when login/signup, any request sent from the client to the database returned a network error. Unfortunately I had to transition to a Custom based authentication approach, more complexed and potentially error prone, but hopefully more controllable.
+
+STEP 8:
+    Implementing a Modal form to create a new document (create van) brought me to consider reusability and adopt the same Modal as a component to deploy for either create and update a document.
+    The <Modal /> becomes a component to import in the <Dashboard />.
+    For the <Modal /> to be reusable for both creating and updating documents, it requires to manage its state based on the operation it's supposed to perform. This involves passing props to the <Modal /> to distinguish between creating and updating.
+
+    Key steps to consider:
+    - Define props: the <Modal/> component has to be modified to accept props that will set up whether it's in create or update mode. Also, it has to receive the data of van document when updating.
+    - Passing props: when opening the <Modal/> to create a document, it's ok having the state isModalOpen == true without additional data, but when it comes to update, it's necessary to pass the selected van's data.
+    - Handling submission: a conditional rendering should determine if the form submission should create or update based on the props.
+
+    

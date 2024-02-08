@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { createVan, getVans, updateVan, deleteVan } from "../../api";
 import { BiSolidMessageSquareEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
+import Modal from "../../components/Modal";
 
 export default function Dashboard() {
     const [vans, setVans] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedVan, setSelectedVan] = useState(null);
 
     // state for handling error messages
     const [error, setError] = useState(null);
@@ -26,8 +28,6 @@ export default function Dashboard() {
         }
         loadVans();
     }, []);
-
-    
 
     // Create Van:
     async function handleCreateVan(e) {
@@ -68,26 +68,40 @@ export default function Dashboard() {
 
     const closeModal = () => {
         setIsModalOpen(false);
+        setSelectedVan(null)
     };
 
-    // Update
-    async function handleUpdateVan(id, van) {
-        const updateData = {
-            name: van.name,
-            price: van.price,
-            type: van.type,
-            description: van.description,
-            imageUrl: van.urlImage,
-        };
+    const openUpdateModal = (van) => {
+        setSelectedVan(van)
+        setIsModalOpen(true)
+    }
 
-        try {
-            await updateVan(id, updateData);
-            alert("Van updated successfully!");
-            setVans(prevState => prevState.map(van => van.id === id ? {...van, ...updateData} : van))
-        } catch (error) {
-            console.error("Failed to update van: " + error);
-            alert("Failed to update van");
+    async function handleFormSubmit(formData) {
+        // Determine if we're creating a new van or updating an existing one
+        if (formData.id) {
+            // We have an ID, so we're updating an existing van
+            try {
+                await updateVan(formData.id, formData);
+                alert("Van updated successfully!");
+                // Update the local state to reflect the changes
+            } catch (error) {
+                console.error("Failed to update van: ", error);
+                alert("Failed to update van");
+            }
+        } else {
+            // No ID, so we're creating a new van
+            try {
+                const newVanId = await createVan(formData);
+                alert("Van created successfully!");
+                // Update the local state to include the new van
+            } catch (error) {
+                console.error("Error creating new van: ", error);
+                alert("Error creating new van");
+            }
         }
+
+        // Close the modal and refresh the list of vans
+        setIsModalOpen(false);
     }
 
     // Delete Van
@@ -103,95 +117,6 @@ export default function Dashboard() {
         }
     }
 
-
-    // Modal form:
-    function Modal() {
-        return (
-            <div>
-                <dialog className="modal" open={isModalOpen}>
-                    <div className="modal-box">
-                        <button
-                            type="button"
-                            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                            onClick={closeModal}
-                        >
-                            ✕
-                        </button>
-                        <h3 className="font-bold text-lg my-2">Create van</h3>
-                        <form
-                            className="flex flex-col gap-5"
-                            onSubmit={handleCreateVan}
-                            
-                        >
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Name"
-                                className="input input-bordered w-full max-w-x"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="price"
-                                placeholder="Price"
-                                className="input input-bordered w-full max-w-x"
-                                required
-                            />
-                            <label for="van-type">Van type:</label>
-                            <select
-                                name="type"
-                                className="input input-bordered w-full max-w-x"
-                                required
-                            >
-                                <option
-                                    value=""
-                                    className="input input-bordered w-full max-w-x"
-                                >
-                                    {" "}
-                                    -- select an option --
-                                </option>
-                                <option
-                                    value="simple"
-                                    className="input input-bordered w-full max-w-x"
-                                >
-                                    Simple
-                                </option>
-                                <option
-                                    value="luxury"
-                                    className="input input-bordered w-full max-w-x"
-                                >
-                                    Luxury
-                                </option>
-                                <option
-                                    value="rugged"
-                                    className="input input-bordered w-full max-w-x"
-                                >
-                                    Rugged
-                                </option>
-                            </select>
-                            <textarea
-                                name="description"
-                                placeholder="Description"
-                                className="input input-bordered w-full max-w-x resize-none"
-                                required
-                            />
-                            <input
-                                type="url"
-                                name="imageUrl"
-                                placeholder="URL image"
-                                className="input input-bordered w-full max-w-x"
-                                required
-                            />
-                            <button type="submit" className="btn btn-primary">
-                                Create Van
-                            </button>
-                        </form>
-                    </div>
-                </dialog>
-            </div>
-        );
-    }
-
     return (
         <div className="container my-2 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
             <div className="container">
@@ -204,7 +129,14 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            {isModalOpen && <Modal/>}
+            {isModalOpen && (
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    onSubmit={handleFormSubmit}
+                    vanData={selectedVan}
+                />
+            )}
 
             <div className="bg-[#fafafa] border-2 border-[#FFDDB2] rounded-lg p-2">
                 <h2 className="text-center">Van List</h2>
@@ -229,15 +161,14 @@ export default function Dashboard() {
                                     <td>{van.description}</td>
                                     <td>
                                         <button
-                                            onClick={() =>
-                                                handleUpdateVan(
-                                                    van.id,
-                                                    {...van}
-                                                )}
+                                            onClick={
+                                                () => openUpdateModal(van)
+                                            }
                                         >
                                             <BiSolidMessageSquareEdit />
                                         </button>
                                     </td>
+                                    {isModalOpen && <Modal />}
                                     <td>
                                         <button
                                             onClick={() =>
