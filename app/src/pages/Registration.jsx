@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { checkEmail, createUser } from "../api";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -10,13 +10,40 @@ export default function Registration() {
     })
     const [emailAlert, setEmailAlert] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
-    const location = useLocation()
-    const navigate = useNavigate()
-    const from = location.state?.from || "/login";
+    const [registrationSuccess, setRegistrationSuccess] = useState(false)
+    const [showModal, setShowModal] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    function togglePassword(e) {
+    const navigate = useNavigate()
+    const emailInputRef = useRef(null)
+    const passwordInputRef = useRef(null)
+    const buttonRef = useRef(null)
+    const modalRef = useRef(null)
+/*     const location = useLocation() */
+/*     const from = location.state?.from || "/login"; */
+
+    useEffect(() => {
+        // focus on email when the app mounts
+        emailInputRef.current.focus()
+    }, [])
+
+    useEffect(() => {
+        if (showModal) {
+            modalRef.current.focus()
+        }
+    }, [showModal])
+
+    function togglePasswordVisibility(e) {
         e.preventDefault()
         setShowPassword(prevState => !prevState)
+    }
+
+    function handleShowModal() {
+        setShowModal(true)
+    }
+
+    function handleHideModal() {
+        setShowModal(false)
     }
 
     function handleChange(e) {
@@ -32,57 +59,108 @@ export default function Registration() {
         const isEmailAvailable = await checkEmail(formData.email)
 
         if (isEmailAvailable) {
-            createUser(formData)
-            setEmailAlert(false)
-            navigate(from, { replace: true })
+            try{
+                await createUser(formData)
+                setEmailAlert(false)
+                setRegistrationSuccess(true)
+                handleShowModal(true)
+                setTimeout(() => {
+                    navigate('/host')
+                }, 3000)
+            } catch (error) {
+                console.error("Error creating user: ", error)
+            }
         } else {
             setEmailAlert(true)
         }
     }
 
     return(
-        <div>
-            <h1>Howdy wanderlust! Create your account now!</h1>
-            <p>Use an inexistent email address and a simple password</p>
-            <form onSubmit={handleSubmit}>
-                <div>
-                <label>Email</label>
-                <input
-                    required
-                    name="email"
-                    type="email"
-                    onChange={handleChange}
-                    placeholder="user@server.com"
-                />
+        <div className="flex min-h-screen items-center justify-center bg-[#FFEAD0]">
+            {showModal && (
+                <div className="modal" ref={modalRef} tabIndex="-1" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+                    <div className="modal-content">
+                    <h2 id="modalTitle">Registration Successful</h2>
+                    <p id="modalDesc">You have successfully registered.</p>
+                    <button onClick={handleHideModal} ref={buttonRef}>Close</button>
+                    </div>
                 </div>
-                <div>
-                <label>Password</label>\
-                <input
-                    required
-                    name="password"
-                    type="password"
-                    onChange={handleChange}
-                    placeholder="Password"
-                    minLength="6"
-                />
-                <button onClick={togglePassword}>
-                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                </button>
-                </div>
+            )}
+            <div className="w-full max-w-md p-8 bg-white rounded shadow-2xl">
+                <h1 className="text-3xl font-bold text-center">Create Your Account</h1>
+                <p className="mt-2 text-center text-sm text-gray-600">Use an email that doesn't exist in our database.</p>
+                
+                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                    <div className="form-control">
+                        <label htmlFor="email" className="label">
+                            <span className="label-text">Email</span>
+                        </label>
+                        <input
+                            ref={emailInputRef}
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="user@server.com"
+                            onChange={handleChange}
+                            required
+                            className="input input-bordered w-full"
+                        />
+                    </div>
 
-                {emailAlert ? (
-                    <p>This email already exist - try another email</p>
-                ) : null} 
-                <button>Registration</button>
-                <p>Do you have an account?
-                    <Link
-                        to="/login"
-                        className=""
-                        >
-                        Log In
-                    </Link>
-                </p>
-            </form>
+                    <div className="form-control">
+                        <label htmlFor="password" className="label">
+                            <span className="label-text">Password</span>
+                        </label>
+                        <div className="relative">
+                            <input
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                onChange={handleChange}
+                                required
+                                minLength="6"
+                                className="input input-bordered w-full pr-10"
+                                ref={passwordInputRef}
+                            />
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute inset-y-0 right-0 mr-2 flex items-center text-lg"
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
+                        </div>
+                    </div>
+
+                    {emailAlert && <p className="text-red-500 text-sm">This email already exists. Try another one.</p>}
+
+                    <button
+                    type="submit"
+                    className={`w-full btn btn-primary ${isSubmitting === true ? "loading" : ""}`}
+                    disabled={isSubmitting === true}
+                    ref={buttonRef}
+                >
+                    {isSubmitting === true ? "Registering..." : "Register"}
+                </button>
+
+                    <p className="text-center text-sm">
+                        Already have an account?{" "}
+                        <Link to="/login" className="text-blue-500 hover:underline">
+                            Log In
+                        </Link>
+                    </p>
+                    {registrationSuccess && (
+                    <div role="alert" className="alert alert-success">
+                        <div className="flex-1">
+                            <label>
+                                <span className="label-text text-white">Registration successful! Redirecting to dashboard...</span>
+                            </label>
+                        </div>
+                    </div>
+                    )}
+                </form>
+            </div>
         </div>
     )
 }

@@ -5,6 +5,7 @@ export default function AuthRequired() {
     const location = useLocation()
 
     if (!currentUser) {
+        // redirect to login and pass the current location in state
         return <Navigate to="/login" state={{ message: "You must log in first", from: location }} replace />
     } else {
         return <Outlet />

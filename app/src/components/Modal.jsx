@@ -60,8 +60,8 @@ function Modal({ isOpen, onClose, onSubmit, vanData = null }) {
                 <h3 className="font-bold text-lg my-2">
                     {vanData ? "Edit Van" : "Create Van"}
                 </h3>
+
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    {/* Form Fields */}
                     <input
                         type="text"
                         name="name"
@@ -135,6 +135,7 @@ function Modal({ isOpen, onClose, onSubmit, vanData = null }) {
                         {vanData ? "Update" : "Create"}
                     </button>
                 </form>
+                
             </div>
         </dialog>
     );

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Link, Outlet, NavLink } from "react-router-dom";
 import { activeStyle } from "../../components/HostLayout";
 import { getVan } from "../../api"; // to be changed if authentication is implemented
+import Spinner from "../../components/Spinner";
+
 
 export default function HostVanDetails() {
     const [vanByID, setVanByID] = useState({
@@ -31,6 +33,11 @@ export default function HostVanDetails() {
         }
         loadVans()
     }, [id]);
+
+    // loading here:
+    if (loading) {
+        return <Spinner />
+    }
 
     const { ID, name, price, description, imageUrl, type } = vanByID;
 

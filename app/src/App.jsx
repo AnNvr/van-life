@@ -18,6 +18,7 @@ import HostVanPricing from "./pages/Host/HostVanPricing.jsx";
 import HostVanPhotos from "./pages/Host/HostVanPhotos.jsx";
 import AuthRequired from "./components/auth/AuthRequired.jsx";
 import Login from "./pages/Login.jsx";
+import Registration from "./pages/Registration.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 
@@ -34,6 +35,10 @@ export default function App() {
                         <Route
                             path="login"
                             element={<Login />}
+                        />
+                        <Route
+                            path="register"
+                            element={<Registration />}
                         />
                         {/* Restricted routes for Host */}
                         <Route element={<AuthRequired />}>

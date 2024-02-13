@@ -45,38 +45,66 @@ export default function Login() {
         }));
     }
 
-    return (
-        <div>
-            {location.state?.message && <h3>{location.state.message}</h3>}
-            <h1>Sign in to your account</h1>
-            {error?.message && <h3>{error.message}</h3>}
-
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="email"
-                    type="email"
-                    placeholder="Email address"
-                    value={formData.email}
-                    onChange={handleChange}
-                />
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
-                <button disabled={status === "submitting"}>
-                    {status === "submitting" ? "Logging in..." : "Log in"}
-                </button>
-            </form>
-            <button
-                type="button"
-                onClick={handleRegister}
-                disabled={status === "submitting"}
-            >
-                Register
-            </button>
-        </div>
+        return (
+            <div className="hero min-h-screen bg-[#FFEAD0] flex items-center justify-center">
+                <div className="card w-full max-w-md shadow-2xl bg-white p-5 rounded">
+                    <div className="card-body">
+                        {location.state?.message && <p className="text-center text-lg text-green-600">{location.state.message}</p>}
+                        <h2 className="card-title text-center text-3xl font-bold">Sign in to your account</h2>
+                        {error && <p className="text-center text-red-600">{error.message}</p>}
+    
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="form-control">
+                                <label className="label" htmlFor="email">
+                                    <span className="label-text">Email</span>
+                                </label>
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    placeholder="Email address"
+                                    className="input input-bordered w-full"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="form-control">
+                                <label className="label" htmlFor="password">
+                                    <span className="label-text">Password</span>
+                                </label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="Password"
+                                    className="input input-bordered w-full"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="btn btn-primary w-full"
+                                disabled={status === "submitting"}
+                            >
+                                {status === "submitting" ? "Logging in..." : "Log in"}
+                            </button>
+                        </form>
+    
+                        <div className="divider">OR</div>
+    
+                        <button
+                            type="button"
+                            className="btn btn-outline btn-accent w-full"
+                            onClick={() => navigate('/register')}
+                            disabled={status === "submitting"}
+                        >
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </div>
     );
 }

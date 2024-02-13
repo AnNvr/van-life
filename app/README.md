@@ -54,8 +54,22 @@ STEP 8:
     For the <Modal /> to be reusable for both creating and updating documents, it requires to manage its state based on the operation it's supposed to perform. This involves passing props to the <Modal /> to distinguish between creating and updating.
 
     Key steps to consider:
+
     - Define props: the <Modal/> component has to be modified to accept props that will set up whether it's in create or update mode. Also, it has to receive the data of van document when updating.
     - Passing props: when opening the <Modal/> to create a document, it's ok having the state isModalOpen == true without additional data, but when it comes to update, it's necessary to pass the selected van's data.
-    - Handling submission: a conditional rendering should determine if the form submission should create or update based on the props.
+    - Handling submission: a conditional rendering should determine if the form submission should create or update based on the props. To do so, I need extra props to <Modal />.
 
+    In Dashboard I define some state to keep track of which van is being edited.
+    I need a function to open the modal for creating and a function to open it for updating. For both the function, the state to setIsModalOpen == true. 
     
+    The recently implemented state selectedVan should be updated differently in each function: For creating, it will be null because we ensure there is no van selected at all; for updating we pass a "van" parameter and we use it as an argument to update selectedVan state for editing.
+
+    The <Modal/> component is ready to accept props for van data and mode. Said so, I can pass in the Modal function the props onClose, onSubmit, and 'vanData'. More of this soon.
+    Since the Modal hosts a form with input fields and I need to listen for changes in value, i define some state formData with each single db property set to an empty string, and a spread operator for the parameter 'vanData' that allows me to fill the input fields with existing data of the selected van (update mode) when is not null. 
+    Instead of implementing an API call and logic to get a document by ID and populate the modal form with existing data when updating occurs, I can use existing data in 'vans' state and pass them to the form as entire object (and as a prop). The 'vanData' = null as default is for create purposes. It assumes there is no existing data for a van document, which it will be populated of new data by the time a new document will be created. The reason to use 'vanData' for prefilling the form when it's not null is to set the process of editing an existing document. I select a van to edit, so I pass its data, retrivied from the 'vans' state, directly to the <Modal/> as 'vanData'. A Firestor document is an entire object including its ID, and so 'vanData' is the entire object with ID.
+    Else, when opning the modal to create a new doc, 'vanData' = null by default.
+
+    for code reusability I have implemented both the create and update a document in the same 'handleFormSubmit' function.
+
+
+

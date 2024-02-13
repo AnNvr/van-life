@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getHostVans } from "../../api";
+import { getVans } from "../../api";
+import Spinner from "../../components/Spinner";
 
 
 export default function HostVans() {
@@ -10,8 +11,9 @@ export default function HostVans() {
 
     useEffect(() => {
         async function loadVans() {
+            setLoading(true)
             try {
-                const data = await getHostVans()
+                const data = await getVans()
                 setVans(data)
             } catch (err) {
                 setError(err)
@@ -41,7 +43,7 @@ export default function HostVans() {
     ));
 
     if (loading) {
-        return <h1>Loading...</h1>
+        return <Spinner />
     }
 
     if (error) {
