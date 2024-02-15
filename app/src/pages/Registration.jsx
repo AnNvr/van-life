@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { checkEmail, createUser } from "../api";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { auth } from "../api.js";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -21,8 +20,8 @@ export default function Registration() {
     const passwordInputRef = useRef(null)
     const buttonRef = useRef(null)
     const modalRef = useRef(null)
-/*     const location = useLocation() */
-/*     const from = location.state?.from || "/login"; */
+    const location = useLocation()
+    const from = location.state?.from || "/login";
 
     useEffect(() => {
         // focus on email when the app mounts
@@ -74,25 +73,6 @@ export default function Registration() {
             setError(error);
             setEmailAlert(true)
         }
-
-/*         e.preventDefault()
-        const isEmailAvailable = await checkEmail(formData.email)
-
-        if (isEmailAvailable) {
-            try{
-                await createUser(formData)
-                setEmailAlert(false)
-                setRegistrationSuccess(true)
-                handleShowModal(true)
-                setTimeout(() => {
-                    navigate('/host')
-                }, 3000)
-            } catch (error) {
-                console.error("Error creating user: ", error)
-            }
-        } else {
-            setEmailAlert(true)
-        } */
     }
 
     return(

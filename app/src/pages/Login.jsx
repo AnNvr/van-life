@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loginUser } from "../api.js";
 import { auth } from "../api.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -27,17 +26,6 @@ export default function Login(email, password) {
         } finally {
             setStatus("idle")
         }
-/*         setStatus("submitting"); // Reset err state and set status to submit
-
-        try {
-            await loginUser({ email: formData.email, password: formData.password })
-            navigate(from, { replace: true })
-        } catch (err) {
-            setError(err)
-            console.log("Error loggin in: ", err.message)
-        } finally {
-            setStatus("idle")
-        } */
     }
 
     function handleChange(e) {
