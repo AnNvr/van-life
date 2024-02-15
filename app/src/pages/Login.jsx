@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../api.js";
+import { auth } from "../api.js";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-export default function Login() {
+export default function Login(email, password) {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
@@ -13,7 +15,19 @@ export default function Login() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        setStatus("submitting"); // Reset err state and set status to submit
+
+        // TEST:
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log("User logged in:", userCredential.user);
+            navigate(from, { replace: true })
+        } catch (error) {
+            setError(error)
+            console.log("Error loggin in: ", error.message)
+        } finally {
+            setStatus("idle")
+        }
+/*         setStatus("submitting"); // Reset err state and set status to submit
 
         try {
             await loginUser({ email: formData.email, password: formData.password })
@@ -23,18 +37,7 @@ export default function Login() {
             console.log("Error loggin in: ", err.message)
         } finally {
             setStatus("idle")
-        }
-    }
-
-    async function handleRegister(email, password) {
-        try {
-            const userCredential = await registerUser(email, password)
-                navigate(from, { replace: true })
-                return userCredential
-        } catch (err) {
-            setError(err)
-            console.log("Error registering user: " + err.message)
-        }
+        } */
     }
 
     function handleChange(e) {

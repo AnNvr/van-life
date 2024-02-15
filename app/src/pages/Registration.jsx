@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { checkEmail, createUser } from "../api";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { auth } from "../api.js";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function Registration() {
     const [formData, setFormData] = useState({
@@ -55,7 +57,25 @@ export default function Registration() {
     }
 
     async function handleSubmit(e) {
-        e.preventDefault()
+        e.preventDefault();
+
+        // TEST:
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            console.log("User registered:", userCredential.user);
+            setEmailAlert(false)
+            setRegistrationSuccess(true)
+            handleShowModal(true)
+            setTimeout(() => {
+                navigate('/host')
+            }, 3000)
+        } catch (error) {
+            console.error("Error creating user: ", error);
+            setError(error);
+            setEmailAlert(true)
+        }
+
+/*         e.preventDefault()
         const isEmailAvailable = await checkEmail(formData.email)
 
         if (isEmailAvailable) {
@@ -72,7 +92,7 @@ export default function Registration() {
             }
         } else {
             setEmailAlert(true)
-        }
+        } */
     }
 
     return(

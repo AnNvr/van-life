@@ -1,6 +1,6 @@
 import "../server.js";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./pages/About";
 import Hero from "./pages/Hero";
@@ -20,9 +20,26 @@ import AuthRequired from "./components/auth/AuthRequired.jsx";
 import Login from "./pages/Login.jsx";
 import Registration from "./pages/Registration.jsx";
 import NotFound from "./pages/NotFound.jsx";
+// TEST:
+import { auth } from "./api.js";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 export default function App() {
+
+    // TEST:
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is signed in:", user);
+            } else {
+                console.log("No user is signed in.");
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     return (
         <React.StrictMode>
             <BrowserRouter>

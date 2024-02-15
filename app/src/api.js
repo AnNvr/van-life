@@ -11,6 +11,8 @@ import {
     deleteDoc,
     updateDoc
 } from "firebase/firestore/lite";
+// TEST fixing auth and registration users
+import { getAuth } from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -24,6 +26,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app)
 const db = getFirestore(app);
 const vansCollection = collection(db, "vans");
 const usersCollection = collection(db, "users");
@@ -180,3 +183,4 @@ export async function deleteVan(vanID) {
     }
 }
 
+export { auth }
