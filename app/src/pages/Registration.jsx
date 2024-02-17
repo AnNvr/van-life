@@ -59,18 +59,17 @@ export default function Registration() {
         e.preventDefault();
 
         // TEST:
+        console.log("Attempting to register user with email:", formData.email, "and password:", formData.password);
+
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             console.log("User registered:", userCredential.user);
             setEmailAlert(false)
             setRegistrationSuccess(true)
             handleShowModal(true)
-            setTimeout(() => {
-                navigate('/host')
-            }, 3000)
+            navigate('/host')
         } catch (error) {
             console.error("Error creating user: ", error);
-            setError(error);
             setEmailAlert(true)
         }
     }

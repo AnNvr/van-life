@@ -1,6 +1,20 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./auth/AuthProvider";
+import { logoutUser } from "../api";
 
 export default function Navbar() {
+    const { currentUser } = useAuth();
+    const navigate = useNavigate();
+
+    async function handleLogout() {
+        try {
+            await logoutUser()
+            navigate("/login")
+        } catch (error) {
+            console.log("Logout failed", error)
+        }
+    }
+
     const activeStyle = {
         borderBottom: '2px solid black',
     /*     paddingBottom: '0.25rem', */
@@ -35,11 +49,15 @@ export default function Navbar() {
                     style={({ isActive }) => isActive ? activeStyle : null}>
                     Vans
                 </NavLink>
+                {currentUser ? (
+                    <button onClick={handleLogout}>Log Out</button>
+                ) : (
                 <Link
                     to="/login"
                     className="text-lg md:text-xl lg:text-2xl px-2 hover:bg-gray-200 rounded-full">
                     <i class="fa-regular fa-circle-user"></i>
                 </Link>
+                )}
             </div>
         </div>
     );

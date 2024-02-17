@@ -1,7 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
 export default function AuthRequired() {
-    const currentUser = localStorage.getItem("user")
+    const { currentUser } = useAuth()
     const location = useLocation()
 
     if (!currentUser) {

@@ -12,7 +12,7 @@ import {
     updateDoc
 } from "firebase/firestore/lite";
 // TEST fixing auth and registration users
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -67,6 +67,16 @@ export async function loginUser(data) {
     }
 
     return user
+}
+
+//logout
+export async function logoutUser() {
+    try {
+        await signOut(auth)
+        console.log("User signed out successfully!")
+    } catch(error) {
+        console.log("Error logging out User: ", error)
+    }
 }
 
 export async function getVans() {

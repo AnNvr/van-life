@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../api.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-export default function Login(email, password) {
+export default function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ export default function Login(email, password) {
 
         // TEST:
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
             console.log("User logged in:", userCredential.user);
             navigate(from, { replace: true })
         } catch (error) {
