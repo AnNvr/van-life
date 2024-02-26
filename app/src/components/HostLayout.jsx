@@ -16,7 +16,7 @@ export default function HostLayout() {
                 <NavLink
                     end
                     style={({ isActive }) => isActive ? activeStyle : null}
-                    className="font-semibold hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     to="/host"
                 >
                     <MdDashboard className="inline md:hidden"/>
@@ -24,7 +24,7 @@ export default function HostLayout() {
                 </NavLink>
                 <NavLink
                     style={({ isActive }) => isActive ? activeStyle : null}
-                    className="font-semibold hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     to="income"
                 >
                     <FaSackDollar className="inline md:hidden" />
@@ -32,7 +32,7 @@ export default function HostLayout() {
                 </NavLink>
                 <NavLink
                     style={({ isActive }) => isActive ? activeStyle : null}
-                    className="font-semibold hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     to="vans"
                 >
                     <FaVanShuttle className="inline md:hidden"/>
@@ -40,7 +40,7 @@ export default function HostLayout() {
                 </NavLink>
                 <NavLink
                     style={({ isActive }) => isActive ? activeStyle : null}
-                    className="font-semibold hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     to="reviews"
                 >
                     <BsStars className="inline md:hidden"/>

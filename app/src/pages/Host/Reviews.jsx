@@ -65,7 +65,7 @@ export default function Reviews() {
                 {formattedReviews.map((review) => (
                     <div key={review.id} className="flex items-start space-x-4">
                         <div className="avatar flex-shrink-0">
-                            <div className="h-10 w-10 rounded-full bg-gray-200">
+                            <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-200">
                                 <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
                             </div>
                         </div>
@@ -80,11 +80,11 @@ export default function Reviews() {
                                 </p>
                             </div>
                             <p className="mt-2 text-sm">{review.content}</p>
-                            <div className="mt-2">
+                            <div className="mt-2 flex flex-wrap">
                                 {review.badges.map((badge, badgeIndex) => (
                                     <span
                                         key={badgeIndex}
-                                        className="text-xs font-semibold inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline bg-orange-200 text-orange-700 rounded"
+                                        className="text-xs font-semibold inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline bg-orange-200 text-orange-700 rounded mr-2 mb-2"
                                     >
                                         {badge}
                                     </span>

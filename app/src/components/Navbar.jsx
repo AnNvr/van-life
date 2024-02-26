@@ -33,24 +33,27 @@ export default function Navbar() {
             <div className="flex flex-wrap justify-center mt-4 md:mt-0 space-x-4 md:space-x-6 lg:space-x-10">
                 <NavLink
                     to="/host"
-                    className="font-semibold md:text-2xl hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold md:text-2xl hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     style={({ isActive }) => isActive ? activeStyle : null}>
                     Host
                 </NavLink>
                 <NavLink
                     to="/about"
-                    className="font-semibold md:text-2xl hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold md:text-2xl hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     style={({ isActive }) => isActive ? activeStyle : null}>
                     About
                 </NavLink>
                 <NavLink
                     to="/vans"
-                    className="font-semibold md:text-2xl hover:border-b-2 text-[#4d4d4d] hover:border-black hover:text-black"
+                    className="font-semibold md:text-2xl hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
                     style={({ isActive }) => isActive ? activeStyle : null}>
                     Vans
                 </NavLink>
                 {currentUser ? (
-                    <button onClick={handleLogout}>Log Out</button>
+                    <button
+                        onClick={handleLogout}
+                        className="font-semibold md:text-2xl hover:border-b-2 text-[#161616] hover:border-black hover:text-black"
+                        >Log Out</button>
                 ) : (
                 <Link
                     to="/login"

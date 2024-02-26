@@ -110,7 +110,7 @@ export default function Dashboard() {
             )}
 
             <div className="bg-[#fafafa] border border-[#e6e6e6] rounded-lg overflow-hidden">
-{/*                 <h2 className="text-center text-2xl font-bold my-2">Van List</h2> */}
+
                 <div className="overflow-x-auto">
 
                     <table className="min-w-full leading-normal">
@@ -119,7 +119,7 @@ export default function Dashboard() {
                                 <th className="px-5 py-3 border-b-2 border-[#e6e6e6] bg-[#fafafa] text-left text-xs font-semibold text-[#161616] uppercase tracking-wider">Name</th>
                                 <th className="px-5 py-3 border-b-2 border-[#e6e6e6] bg-[#fafafa] text-left text-xs font-semibold text-[#161616] uppercase tracking-wider">Type</th>
                                 <th className="px-5 py-3 border-b-2 border-[#e6e6e6] bg-[#fafafa] text-left text-xs font-semibold text-[#161616] uppercase tracking-wider">Price</th>
-                                <th className="px-5 py-3 border-b-2 border-[#e6e6e6] bg-[#fafafa] text-left text-xs font-semibold text-[#161616] uppercase tracking-wider">Description</th>
+                                <th className="hidden sm:table-cell px-5 py-3 border-b-2 border-[#e6e6e6] bg-[#fafafa] text-left text-xs font-semibold text-[#161616] uppercase tracking-wider">Description</th>
                                 <th className="px-5 py-3 border-b-2 border-[#e6e6e6] bg-[#fafafa] text-left text-xs font-semibold text-[#161616] uppercase tracking-wider">Options</th>
                             </tr>
                         </thead>
@@ -129,18 +129,18 @@ export default function Dashboard() {
                                     <td className="px-5 py-5 border-b border-[#e6e6e6] bg-white text-sm">{van.name}</td>
                                     <td className="px-5 py-5 border-b border-[#e6e6e6] bg-white text-sm">{van.type}</td>
                                     <td className="px-5 py-5 border-b border-[#e6e6e6] bg-white text-sm">{van.price}</td>
-                                    <td className="px-5 py-5 border-b border-[#e6e6e6] bg-white text-sm">{van.description}</td>
+                                    <td className="hidden sm:table-cell px-5 py-5 border-b border-[#e6e6e6] bg-white text-sm">{van.description}</td>
                                     <td className="px-5 py-5 bg-white text-sm">
                                         <div className="flex justify-around items-center">
                                             <button
                                                 onClick={() => openUpdateModal(van)}
-                                                className="text-[#4d4d4d] text-lg hover:text-[#FFDDB2]"
+                                                className="text-[#161616] text-lg hover:text-[#FFDDB2]"
                                             >
                                                 <FaEdit />
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteVan(van.id, van.name)}
-                                                className="text-[#4d4d4d] text-lg hover:text-red-500"
+                                                className="text-[#161616] text-lg hover:text-red-500"
                                             >
                                                 <FaTrash />
                                             </button>
